@@ -230,8 +230,8 @@ export async function GET() {
                         const description = await product.$eval('a.item-title', (element) => element.textContent?.trim())
 
                         // GET PRODUCT PRICE
-                        const wholePrice = await product.$eval('li.price-current > strong', element => element.textContent.trim())
-                        const decimalPrice = await product.$eval('li.price-current > sup', element => element.textContent.trim())
+                        const wholePrice = await product.$eval('li.price-current > strong', element => element.textContent?.trim())
+                        const decimalPrice = await product.$eval('li.price-current > sup', element => element.textContent?.trim())
                         const price = `$${wholePrice}${decimalPrice}`
 
                         // RETURN THE PRICE IN NUMERIC FORMAT 
