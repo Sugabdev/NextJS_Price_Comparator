@@ -49,6 +49,10 @@ node_modules/
 tests
 tests-examples
 /screenshot
+e2e
 
 # vs code
 .vscode
+
+# render
+render.yaml
