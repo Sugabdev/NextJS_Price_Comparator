@@ -254,7 +254,11 @@ export async function GET() {
             }
         ]
 
-        const browser = await chromium.launch({ headless: true, slowMo: 200 })
+        const browser = await chromium.launch({
+            headless: true,
+            slowMo: 200,
+            args: ['--no-sandbox', '--disable-setuid-sandbox']
+        })
 
         // SCRAPE EACH STORE
         const storesInfo: Product[] = []
