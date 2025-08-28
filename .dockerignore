@@ -1,0 +1,37 @@
+# Playwright / Tests
+tests
+tests-examples
+e2e
+screenshot
+playwright.config.ts
+
+# Node
+node_modules
+npm-debug.log
+
+# VS Code
+.vscode
+
+# Next.js
+.next
+next-env.d.ts
+
+# Eslint
+eslint.config.mjs
+
+# Postcss
+postcss.config.mjs
+
+# Typescript
+tsconfig.json
+
+# Documentación
+README.md
+
+# Docker
+Dockerfile
+.dockerignore
+
+# Git
+.git
+.gitignore
