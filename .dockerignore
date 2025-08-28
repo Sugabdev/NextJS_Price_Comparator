@@ -22,9 +22,6 @@ eslint.config.mjs
 # Postcss
 postcss.config.mjs
 
-# Typescript
-tsconfig.json
-
 # Documentación
 README.md
 
