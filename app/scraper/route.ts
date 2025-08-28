@@ -256,8 +256,7 @@ export async function GET() {
 
         const browser = await chromium.launch({
             headless: true,
-            slowMo: 200,
-            args: ['--no-sandbox', '--disable-setuid-sandbox']
+            slowMo: 200
         })
 
         // SCRAPE EACH STORE
