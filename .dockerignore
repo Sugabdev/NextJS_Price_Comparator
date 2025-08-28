@@ -19,9 +19,6 @@ next-env.d.ts
 # Eslint
 eslint.config.mjs
 
-# Postcss
-postcss.config.mjs
-
 # Documentación
 README.md
 
