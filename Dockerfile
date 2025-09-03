@@ -1,54 +1,43 @@
-FROM node:22-slim AS base
+# Etapa 1: Build
+FROM node:20-slim AS builder
 
-# Dependencias necesarias para Chromium
+# Instalar dependencias necesarias para build
 RUN apt-get update && apt-get install -y \
-    wget \
-    ca-certificates \
-    fonts-liberation \
-    libasound2 \
-    libatk1.0-0 \
-    libatk-bridge2.0-0 \
-    libcups2 \
-    libdrm2 \
-    libxkbcommon0 \
-    libxcomposite1 \
-    libxdamage1 \
-    libxfixes3 \
-    libxrandr2 \
-    libgbm1 \
-    libpango-1.0-0 \
-    libpangocairo-1.0-0 \
-    libx11-6 \
-    libx11-xcb1 \
-    libxcb1 \
-    libxcursor1 \
-    libxi6 \
-    libxrender1 \
-    libxss1 \
-    libxtst6 \
-    libnss3 \
-    libglib2.0-0 \
-    libgdk-pixbuf2.0-0 \
-    libgtk-3-0 \
-    && rm -rf /var/lib/apt/lists/*
+  python3 make g++ \
+  && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
-# Copiar package.json y package-lock.json
-COPY package*.json ./
+COPY package.json package-lock.json* ./
+RUN npm ci
 
-# Instalar dependencias (solo producción)
-RUN npm ci --omit=dev
-
-# Copiar el resto del código
 COPY . .
-
-# Construir Next.js (esto genera .next/standalone internamente)
 RUN npm run build
 
-# Instalar Chromium
+# Instalar Chromium para Playwright (solo necesario en runtime)
 RUN npx playwright install --with-deps chromium
+
+# Etapa 2: Runtime
+FROM node:20-slim AS runner
+
+# Instalar dependencias mínimas para Chromium
+RUN apt-get update && apt-get install -y \
+  libatk1.0-0 libatk-bridge2.0-0 libcups2 libdrm2 libxkbcommon0 libxcomposite1 \
+  libxdamage1 libxrandr2 libgbm1 libasound2 libpangocairo-1.0-0 libpango-1.0-0 \
+  libcairo2 libnss3 libx11-xcb1 libxshmfence1 xvfb \
+  && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# Copiamos el standalone build y node_modules de playwright
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package.json ./package.json
+
+ENV NODE_ENV=production
+ENV PORT=3000
 
 EXPOSE 3000
 
-CMD ["npm", "start"]
+CMD ["node", "server.js"]
